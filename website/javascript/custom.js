@@ -228,6 +228,13 @@ function load_work(employee) {
                             } else if (date_i_got <= today && your_data[0].position == "Benefits Coordinator") {
                                 employee_work[i]["Urgency level"] = 90;
                                 notify_my_sup(employee_work[i]);
+                                continue
+                            }
+                            let myupdate_re = `<p class="card-text" id="app_cost_re_${employee_work[i]["Application ID"]}"></p>`;
+                            if (your_data[0].position == "Benefits Coordinator") {
+                                myupdate_re = `
+                                <label for="app_cost_slider_${employee_work[i]["Application ID"]}" id="update_re_val${employee_work[i]["Application ID"]}" class="card-title">First Name: <span id="app_cost_re_${employee_work[i]["Application ID"]}"></span></label>
+                                <input type="range" oninput="document.getElementById('update_re_val${employee_work[i]["Application ID"]}').innerHTML = 'First Name: ('+formatter.format(this.value)+')'" min=0 max=1000 class="card-text" name="app_cost_slider_${employee_work[i]["Application ID"]}" id="app_cost_slider_${employee_work[i]["Application ID"]}">`;
                             }
                             document.getElementById("complete_approvals").innerHTML += `
                             <li id="approve_item_${employee_work[i]["Work ID"]}">
@@ -251,7 +258,7 @@ function load_work(employee) {
                                                 <h4 class="card-title">Total Cost</h4>
                                                 <p class="card-text" id="app_cost_${employee_work[i]["Application ID"]}"></p>
                                                 <h4 class="card-title">Projected Reimbursement</h4>
-                                                <p class="card-text" id="app_cost_re_${employee_work[i]["Application ID"]}"></p>
+                                                ${myupdate_re}
                                                 <h5 class="card-title">Description of Event:</h5>
                                                 <p class="card-text" id="app_desc_${employee_work[i]["Application ID"]}"></p>
                                                 <h5 class="card-title">Event Date</h5>
@@ -639,6 +646,8 @@ function get_my_app(app_id) {
                         document.getElementById(`work_app_${app_id}`).innerHTML = `Employee awaiting approval(#eID-${app_elements[i]["Employee ID"]})`;
                         document.getElementById(`app_cost_${app_id}`).innerHTML = `${my_money}`;
                         document.getElementById(`app_cost_re_${app_id}`).innerHTML = `${my_money_re}`;
+                        document.getElementById(`app_cost_slider_${app_id}`).setAttribute("max", app_elements[i]["Total Cost"]);
+                        document.getElementById(`app_cost_slider_${app_id}`).value = `${app_elements[i]["Total Refunded"]}`;
                         document.getElementById(`app_desc_${app_id}`).innerHTML = `${app_elements[i]["Description"]}`;
                         document.getElementById(`app_edate_${app_id}`).innerHTML = `${nameOfDay[format_my_date.getUTCDay()]} ${format_my_date.getUTCMonth()+1}/${format_my_date.getUTCDate()}/${format_my_date.getUTCFullYear()}`;
                         document.getElementById(`app_etype_${app_id}`).innerHTML = `${app_elements[i]["Event Type"]}`;

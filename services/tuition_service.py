@@ -161,7 +161,7 @@ class TuitionService:
         TD.get_emps(employee=employee)
         # Validate that the work ID exists
         TD.find_work_order(work_id=work_id)
-        # Validate that the application exists
+        # Update the Work Order
         valid_work = TD.update_work_order(work_id=work_id, work_data=work_data, employee=employee)
         if valid_work[0].approval:
             my_app = TD.get_apps(app_data=valid_work[0].app_id)

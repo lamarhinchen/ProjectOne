@@ -5,7 +5,7 @@ from pages.projectone_home import ProjectOneHome
 
 
 def before_all(context):
-    driver: WebDriver = webdriver.Chrome("C:/Users/Lamar/PycharmProjects/chromedriver_win32/chromedriver.exe")
+    driver: WebDriver = webdriver.Chrome("chromedriver_win32/chromedriver.exe")
     projectone_home = ProjectOneHome(driver)
 
     context.driver = driver

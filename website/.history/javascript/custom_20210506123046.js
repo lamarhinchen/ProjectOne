@@ -901,7 +901,6 @@ function get_refundable_amt(your_data, my_loader) {
         if (this.readyState == 4 && this.status == 200) {
             document.getElementById(my_loader).innerHTML = "";
             let app_elements = JSON.parse(this.responseText);
-            cal_refund = app_elements;
             //update the projected reimbursement amount
             calculate_refundable_amt(my_loader);
         } else if (this.readyState == 4 && this.status == 400) {

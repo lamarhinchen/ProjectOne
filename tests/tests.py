@@ -1,10 +1,6 @@
 import unittest
-from psycopg2 import Error
-from cust_exceptions.acct_already_exists import AcctAlreadyExists
 from cust_exceptions.acct_does_not_exist import AcctDoesNotExist
 from cust_exceptions.app_not_completed import AppNotCompleted
-from cust_exceptions.incorrect_money_value import IncorrectMoneyValue
-from cust_exceptions.invalid_value import InvalidValue
 from dao.dao_imp import TuitionDao as TDTest
 from services.tuition_service import TuitionService as STest
 

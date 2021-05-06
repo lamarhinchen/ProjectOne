@@ -229,12 +229,12 @@ function load_work(employee) {
                                 employee_work[i]["Urgency level"] = 90;
                                 notify_my_sup(employee_work[i]);
                                 continue
-                            }
+                            }document.getElementById().innerHTML
                             let myupdate_re = `<p class="card-text" id="app_cost_re_${employee_work[i]["Application ID"]}"></p>`;
                             if (your_data[0].position == "Benefits Coordinator") {
                                 myupdate_re = `
-                                <label for="app_cost_slider_${employee_work[i]["Application ID"]}" id="update_re_val${employee_work[i]["Application ID"]}" class="card-title">First Name: <span id="app_cost_re_${employee_work[i]["Application ID"]}"></span></label>
-                                <input type="range" oninput="document.getElementById('update_re_val${employee_work[i]["Application ID"]}').innerHTML = 'First Name: ('+formatter.format(this.value)+')'" min=0 max=1000 class="card-text" name="app_cost_slider_${employee_work[i]["Application ID"]}" id="app_cost_slider_${employee_work[i]["Application ID"]}">`;
+                                <label for="app_cost_re_${employee_work[i]["Application ID"]}" id="update_re_val${employee_work[i]["Application ID"]}" class="card-title">First Name:</label>
+                                <input type="range" oninput="document.getElementById('update_re_val${employee_work[i]["Application ID"]}').innerHTML = 'First Name: ('+this.value')'" min=0 max=100 class="card-text" name="app_cost_re_${employee_work[i]["Application ID"]}" id="app_cost_re_${employee_work[i]["Application ID"]}">`;
                             }
                             document.getElementById("complete_approvals").innerHTML += `
                             <li id="approve_item_${employee_work[i]["Work ID"]}">
@@ -646,8 +646,6 @@ function get_my_app(app_id) {
                         document.getElementById(`work_app_${app_id}`).innerHTML = `Employee awaiting approval(#eID-${app_elements[i]["Employee ID"]})`;
                         document.getElementById(`app_cost_${app_id}`).innerHTML = `${my_money}`;
                         document.getElementById(`app_cost_re_${app_id}`).innerHTML = `${my_money_re}`;
-                        document.getElementById(`app_cost_slider_${app_id}`).setAttribute("max", app_elements[i]["Total Cost"]);
-                        document.getElementById(`app_cost_slider_${app_id}`).value = `${app_elements[i]["Total Refunded"]}`;
                         document.getElementById(`app_desc_${app_id}`).innerHTML = `${app_elements[i]["Description"]}`;
                         document.getElementById(`app_edate_${app_id}`).innerHTML = `${nameOfDay[format_my_date.getUTCDay()]} ${format_my_date.getUTCMonth()+1}/${format_my_date.getUTCDate()}/${format_my_date.getUTCFullYear()}`;
                         document.getElementById(`app_etype_${app_id}`).innerHTML = `${app_elements[i]["Event Type"]}`;
@@ -847,25 +845,29 @@ function calculate_refundable_amt(my_loader) {
         let money_applying_for = 0;
         let percent_eligible = 0;
         let money_eliglible = 0
-        if(document.getElementById("event_types").value == "courses") {
-            percent_eligible = 0.8;
-        } else if(document.getElementById("event_types").value == "seminars") {
-            percent_eligible = 0.6;
-        } else if(document.getElementById("event_types").value == "certification preparation classes") {
-            percent_eligible = 0.75;
-        } else if(document.getElementById("event_types").value == "certification") {
-            percent_eligible = 1.0;
-        } else if(document.getElementById("event_types").value == "technical training") {
-            percent_eligible = 0.9;
-        } else if(document.getElementById("event_types").value == "other") {
-            percent_eligible = 0.3;
+        if (document.getElementById("event_types")) {
+            if(document.getElementById("event_types").value == "courses") {
+                percent_eligible = 0.8;
+            } else if(document.getElementById("event_types").value == "seminars") {
+                percent_eligible = 0.6;
+            } else if(document.getElementById("event_types").value == "certification preparation classes") {
+                percent_eligible = 0.75;
+            } else if(document.getElementById("event_types").value == "certification") {
+                percent_eligible = 1.0;
+            } else if(document.getElementById("event_types").value == "technical training") {
+                percent_eligible = 0.9;
+            } else if(document.getElementById("event_types").value == "other") {
+                percent_eligible = 0.3;
+            }
         }
         if (money_left <= 0) {
             document.getElementById(my_loader).innerHTML = "<p>You do not have any money left to file for this year. Please check back next year!</p>";
             return false;
         } else {
-            if(document.getElementById("price_tag").value) {
-                money_applying_for = document.getElementById("price_tag").value;
+            if (document.getElementById("price_tag")) {
+                if(document.getElementById("price_tag").value) {
+                    money_applying_for = document.getElementById("price_tag").value;
+                }
             }
             if((money_applying_for*percent_eligible) < money_left) {
                 money_eliglible = money_applying_for*percent_eligible;

@@ -847,25 +847,29 @@ function calculate_refundable_amt(my_loader) {
         let money_applying_for = 0;
         let percent_eligible = 0;
         let money_eliglible = 0
-        if(document.getElementById("event_types").value == "courses") {
-            percent_eligible = 0.8;
-        } else if(document.getElementById("event_types").value == "seminars") {
-            percent_eligible = 0.6;
-        } else if(document.getElementById("event_types").value == "certification preparation classes") {
-            percent_eligible = 0.75;
-        } else if(document.getElementById("event_types").value == "certification") {
-            percent_eligible = 1.0;
-        } else if(document.getElementById("event_types").value == "technical training") {
-            percent_eligible = 0.9;
-        } else if(document.getElementById("event_types").value == "other") {
-            percent_eligible = 0.3;
+        if (document.getElementById("event_types")) {
+            if(document.getElementById("event_types").value == "courses") {
+                percent_eligible = 0.8;
+            } else if(document.getElementById("event_types").value == "seminars") {
+                percent_eligible = 0.6;
+            } else if(document.getElementById("event_types").value == "certification preparation classes") {
+                percent_eligible = 0.75;
+            } else if(document.getElementById("event_types").value == "certification") {
+                percent_eligible = 1.0;
+            } else if(document.getElementById("event_types").value == "technical training") {
+                percent_eligible = 0.9;
+            } else if(document.getElementById("event_types").value == "other") {
+                percent_eligible = 0.3;
+            }
         }
         if (money_left <= 0) {
             document.getElementById(my_loader).innerHTML = "<p>You do not have any money left to file for this year. Please check back next year!</p>";
             return false;
         } else {
-            if(document.getElementById("price_tag").value) {
-                money_applying_for = document.getElementById("price_tag").value;
+            if (document.getElementById("price_tag")) {
+                if(document.getElementById("price_tag").value) {
+                    money_applying_for = document.getElementById("price_tag").value;
+                }
             }
             if((money_applying_for*percent_eligible) < money_left) {
                 money_eliglible = money_applying_for*percent_eligible;

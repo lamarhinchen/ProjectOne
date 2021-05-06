@@ -1,0 +1,8 @@
+Cucumber Tests:
+
+Done - Scenario to test Login of users in different roles
+Done - Scenario to test at least one person submitting reimburserment request
+Scenario to test at least one person viewing reimbursement requests that need their attention
+Scenario to test at least one person approving reimbursement request per approval stage
+Scenario to test at least one person rejecting reimbursement request
+Scenario to test at least one person requesting additional info for a request

@@ -127,7 +127,7 @@ class TuitionDao:
             # Load result set from data base
             tuple_holder = (int(emp_id),)
             db_view = Apps.misc_connect("""SELECT * FROM employee_work WHERE emp_id=%s;""",
-                                             tuple_holder)
+                                        tuple_holder)
             if len(db_view) == 0:
                 # Are they a supervisor
                 # Load result set from data base
@@ -141,7 +141,8 @@ class TuitionDao:
                     db_view = Apps.misc_connect("""SELECT * FROM dept WHERE depthead_id=%s;""",
                                                 tuple_holder)
                     if len(db_view) <= 0:
-                        raise AcctDoesNotExist(f"This employee has not been positioned in the company yet!", loc=f" | Level:{__name__}")
+                        raise AcctDoesNotExist(f"This employee has not been positioned in the company yet!",
+                                               loc=f" | Level:{__name__}")
                     else:
                         position["position"] = "depthead"
                 else:
@@ -183,7 +184,7 @@ class TuitionDao:
                 up_req["date_completed"] = datetime.datetime.now()
             # Load result set from data base
             tuple_holder = (
-                 up_req["reason"], up_req["date_completed"], int(info_id))
+                up_req["reason"], up_req["date_completed"], int(info_id))
             db_view = Apps.work_list_connect(
                 f"""UPDATE add_info SET reason=%s, date_completed=%s WHERE info_id=%s RETURNING *;""",
                 tuple_holder)
@@ -232,7 +233,8 @@ class TuitionDao:
             add_req["to_emp_id"] = to_emp_id
             db_view = cls.find_add_info(emp_id=emp_id, to_emp_id=to_emp_id, add_req=add_req)
             if len(db_view) > 0:
-                raise AcctAlreadyExists("This request was already made, no need to make another!", loc=f" | Level:{__name__}")
+                raise AcctAlreadyExists("This request was already made, no need to make another!",
+                                        loc=f" | Level:{__name__}")
             data_names = ""
             data_values = ""
             for app_parts in add_req:
@@ -315,7 +317,7 @@ class TuitionDao:
             # Load result set from data base
             tuple_holder = [tuition_info for tuition_info in add_req.values()]
             db_view = Apps.add_info_connect(
-                f"""SELECT * FROM add_info WHERE {data_names};""",
+                f"""SELECT * FROM add_info WHERE {data_names} and date_completed!=null;""",
                 tuple_holder)
             return db_view
 
@@ -356,7 +358,8 @@ class TuitionDao:
                                             tuple_holder)
             # Find the supervisor's info
             if db_view is None:
-                raise InvalidValue("You are not yet assigned to any work-group! Please notify mgmt to assign you.", loc=f" | Level:{__name__}")
+                raise InvalidValue("You are not yet assigned to any work-group! Please notify mgmt to assign you.",
+                                   loc=f" | Level:{__name__}")
             tuple_holder = (int(db_view[0][0]),)
             db_view = Apps.emp_make_connect("""SELECT * FROM employees WHERE emp_id=%s AND disabled=false;""",
                                             tuple_holder)
@@ -551,7 +554,9 @@ class TuitionDao:
             f"""select app_id as denied from work_list where approval=false and ({data_names}) group by app_id;""",
             tuple_holder)
         Log_Me.info_log(f"Getting the apps that were denied:{db_view} | Level:{__name__}")
-        reimburse_val = {"emp_id": int(employee), "total_apps": total_amt[0][1], "total_apps_denied": 0, "total_refund_denied": 0, "total_refund": round(float(total_amt[0][2]), 2), "calculated_refund": 0}
+        reimburse_val = {"emp_id": int(employee), "total_apps": total_amt[0][1], "total_apps_denied": 0,
+                         "total_refund_denied": 0, "total_refund": round(float(total_amt[0][2]), 2),
+                         "calculated_refund": 0}
         if len(db_view) > 0:
             total_apps_denied = db_view
             # Total amount that was denied

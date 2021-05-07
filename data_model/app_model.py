@@ -6,7 +6,8 @@ class AppModel:
                  description=None, work_just=None, price_tag=None, refunded_amt=None, event_types=None,
                  grade_format=None,
                  sup_approval_attach=None, sup_approval=None, dept_approval=None, benco_approval=None,
-                 date_received=None, date_event=None, missed_time=None, min_grade=None):
+                 date_received=None, date_event=None, missed_time=None, min_grade=None, approval_completed=None,
+                 passed=None, final_grade=None):
         self.app_id = app_id
         self.emp_id = emp_id
         self.address = address
@@ -28,13 +29,17 @@ class AppModel:
         self.date_event = date_event
         self.missed_time = float(missed_time)
         self.min_grade = min_grade
+        self.approval_completed = approval_completed
+        self.passed = passed
+        self.final_grade = final_grade
 
     def __repr__(self):
         return repr(
             dict(app_id=self.app_id, emp_id=self.emp_id, price_tag=self.price_tag, refunded_amt=self.refunded_amt,
                  event_types=self.event_types, sup_approval_attach=self.sup_approval_attach,
                  sup_approval=self.sup_approval, dept_approval=self.dept_approval, benco_approval=self.benco_approval,
-                 date_event=self.date_event))
+                 date_event=self.date_event, approval_completed=self.approval_completed, passed=self.passed,
+                 final_grade=self.final_grade))
 
     def json(self):
         return {
@@ -58,7 +63,10 @@ class AppModel:
             "File Date": self.date_received,
             "Event Date": self.date_event,
             "Missed Time": self.missed_time,
-            "Grade Scale": self.min_grade
+            "Grade Scale": self.min_grade,
+            "Approval Completed": self.approval_completed,
+            "Passed": self.passed,
+            "Final Grade": self.final_grade
         }
 
     @staticmethod
@@ -85,5 +93,8 @@ class AppModel:
         tuition_app_data.date_event = json["Event Date"]
         tuition_app_data.missed_time = json["Missed Time"]
         tuition_app_data.min_grade = json["Grade Scale"]
+        tuition_app_data.approval_completed = json["Approval Completed"]
+        tuition_app_data.passed = json["Passed"]
+        tuition_app_data.final_grade = json["Final Grade"]
 
         return tuition_app_data

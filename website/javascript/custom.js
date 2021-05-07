@@ -209,10 +209,10 @@ function load_work(employee) {
                             if (employee_work[i]["Description"] != null) {
                                 my_desc = employee_work[i]["Description"];
                             }
-                            disable_dept = "hidden='hidden'";
-                            disable_sup = "hidden='hidden'";
-                            disable_desc_req = "";
-                            dis_req_func = "";
+                            let disable_dept = "hidden='hidden'";
+                            let disable_sup = "hidden='hidden'";
+                            let disable_desc_req = "";
+                            let dis_req_func = "";
                             if(employee[0].position == "Benefits Coordinator") {
                                 disable_dept = "";
                                 disable_sup = "";
@@ -222,9 +222,9 @@ function load_work(employee) {
                                 disable_desc_req = "disabled='disabled'";
                                 dis_req_func = `block_deny(this, 'denier_${employee_work[i]["Work ID"]}');`
                             }
-                            get_my_app(employee_work[i]["Application ID"]);
-                            today = new Date();
-                            date_i_got = new Date(employee_work[i]["Date Received"]);
+                            get_my_app(employee_work[i]["Application ID"], my_date);
+                            let today = new Date();
+                            let date_i_got = new Date(employee_work[i]["Date Received"]);
                             date_i_got.setUTCDate(date_i_got.getUTCDate()+1)
                             if (date_i_got <= today && your_data[0].position != "Benefits Coordinator") {
                                 approve_app(employee_work[i]["Urgency level"], employee_work[i]["Application ID"], employee_work[i]["Employee ID"], employee_work[i]["Work ID"], true);
@@ -240,7 +240,7 @@ function load_work(employee) {
                                 <input type="range" oninput="document.getElementById('update_re_val${employee_work[i]["Application ID"]}').innerHTML = 'First Name: ('+formatter.format(this.value)+')'" min=0 max=1000 class="card-text" name="app_cost_slider_${employee_work[i]["Application ID"]}" id="app_cost_slider_${employee_work[i]["Application ID"]}">`;
                             }
                             document.getElementById("complete_approvals").innerHTML += `
-                            <li id="approve_item_${employee_work[i]["Work ID"]}">
+                            <li id="approve_item_${employee_work[i]["Application ID"]}">
                                 <div class="card ${my_most_urgent}">
                                     <div class="row">
                                         <div class="col-7">
@@ -278,38 +278,40 @@ function load_work(employee) {
                                         </div>
                                     </div>
                                 </div>
-                                <button type="submit" id="approverbtn_${employee_work[i]["Work ID"]}" onclick="approve_app(${employee_work[i]["Urgency level"]}, ${employee_work[i]["Application ID"]}, ${employee_work[i]["Employee ID"]}, ${employee_work[i]["Work ID"]}, true);" class="btn btn-outline-success approve-btn">Approve Application
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
-                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-                                        <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"/>
-                                    </svg>
-                                </button>
-                                <span>
-                                    <button type="submit" disabled='disabled' ${disable_dept} id="requestorbtn_${employee_work[i]["Work ID"]}_dept" onclick="request_add_info(${employee_work[i]["Application ID"]}, 'textarea_${employee_work[i]["Application ID"]}', 'dept_approval', this);" class="btn btn-outline-success req-add-dept">Request Additional Information(depthead)
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-circle" viewBox="0 0 16 16">
+                                <div id="button_holder_${employee_work[i]["Application ID"]}">
+                                    <button type="submit" id="approverbtn_${employee_work[i]["Work ID"]}" onclick="approve_app(${employee_work[i]["Urgency level"]}, ${employee_work[i]["Application ID"]}, ${employee_work[i]["Employee ID"]}, ${employee_work[i]["Work ID"]}, true);" class="btn btn-outline-success approve-btn">Approve Application
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
                                             <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-                                            <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
+                                            <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"/>
                                         </svg>
                                     </button>
-                                    <button type="submit" disabled='disabled' ${disable_sup} id="requestorbtn_${employee_work[i]["Work ID"]}_sup" onclick="request_add_info(${employee_work[i]["Application ID"]}, 'textarea_${employee_work[i]["Application ID"]}', 'sup_approval', this);" class="btn btn-outline-success req-add-sup">Request Additional Information(supervisor)
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-circle" viewBox="0 0 16 16">
+                                    <span>
+                                        <button type="submit" disabled='disabled' ${disable_dept} id="requestorbtn_${employee_work[i]["Work ID"]}_dept" onclick="request_add_info(${employee_work[i]["Application ID"]}, 'textarea_${employee_work[i]["Application ID"]}', 'dept_approval', this);" class="btn btn-outline-success req-add-dept">Request Additional Information(depthead)
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-circle" viewBox="0 0 16 16">
+                                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                                <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
+                                            </svg>
+                                        </button>
+                                        <button type="submit" disabled='disabled' ${disable_sup} id="requestorbtn_${employee_work[i]["Work ID"]}_sup" onclick="request_add_info(${employee_work[i]["Application ID"]}, 'textarea_${employee_work[i]["Application ID"]}', 'sup_approval', this);" class="btn btn-outline-success req-add-sup">Request Additional Information(supervisor)
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-circle" viewBox="0 0 16 16">
+                                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                                <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
+                                            </svg>
+                                        </button>
+                                        <button type="submit" disabled='disabled' id="requestorbtn_${employee_work[i]["Work ID"]}" onclick="request_add_info(${employee_work[i]["Application ID"]}, 'textarea_${employee_work[i]["Application ID"]}', 'emp', this);" class="btn btn-outline-success req-add">Request Additional Information(employee)
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-circle" viewBox="0 0 16 16">
+                                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                                <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
+                                            </svg>
+                                        </button>
+                                    </span>
+                                    <button type="submit"  onclick="approve_app(${employee_work[i]["Urgency level"]}, ${employee_work[i]["Application ID"]}, ${employee_work[i]["Employee ID"]}, ${employee_work[i]["Work ID"]}, false);" id="denier_${employee_work[i]["Work ID"]}" ${disable_desc_req} class="btn btn-outline-danger reject-btn">Deny Request
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
                                             <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-                                            <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
+                                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
                                         </svg>
                                     </button>
-                                    <button type="submit" disabled='disabled' id="requestorbtn_${employee_work[i]["Work ID"]}" onclick="request_add_info(${employee_work[i]["Application ID"]}, 'textarea_${employee_work[i]["Application ID"]}', 'emp', this);" class="btn btn-outline-success req-add">Request Additional Information(employee)
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-circle" viewBox="0 0 16 16">
-                                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-                                            <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
-                                        </svg>
-                                    </button>
-                                </span>
-                                <button type="submit"  onclick="approve_app(${employee_work[i]["Urgency level"]}, ${employee_work[i]["Application ID"]}, ${employee_work[i]["Employee ID"]}, ${employee_work[i]["Work ID"]}, false);" id="denier_${employee_work[i]["Work ID"]}" ${disable_desc_req} class="btn btn-outline-danger reject-btn">Deny Request
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
-                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
-                                    </svg>
-                                </button>
+                                </div>
                                 <hr />
                             </li>`;
                         }
@@ -543,7 +545,7 @@ function approve_app(work_urgency, work_app, work_emp, work_id, approval) {
                     if (app_elements[i]["Employee ID"]) {
                         //Get application data
                         document.getElementById(`msg_loader${work_id}`).innerHTML = `<h6>This approval is completed</h6>`;
-                        let element = document.getElementById("approve_item_"+work_id);
+                        let element = document.getElementById("approve_item_"+work_app);
                         element.parentNode.removeChild(element);
                     }
                 }
@@ -584,6 +586,36 @@ function get_all_my_apps_i_filed(your_data, my_app_loader) {
                 let total_money_re = formatter.format(response_holder[i]["Total Refunded"]);
                 total_cost_all += response_holder[i]["Total Cost"];
                 total_cost_re_all += response_holder[i]["Total Refunded"];
+                let final_grade_submitter = ``;
+                let response_converter = "Pending";
+                if (response_holder[i]["Approval Completed"]) {
+                    response_converter = "Completed";
+                }
+                if (response_holder[i]["Approval Completed"] && response_holder[i]["Final Grade"] != null) {
+                    final_grade_submitter = `
+                    <h5 class="card-title">Your Submitted Grade</h5>
+                    <p id="my_final_grade_${response_holder[i]["Application ID"]}" class="card-text" title="my final grade">${response_holder[i]["Final Grade"]}</p>
+                    <h5 class="card-title">All Approvals Completed:</h5>
+                    <p class="card-text" title="Approvals are completed">${response_converter}</p>
+                    `;
+                } else if (response_holder[i]["Approval Completed"]) {
+                    final_grade_submitter = `
+                    <label for="my_final_grade_${response_holder[i]["Application ID"]}" class="card-title">Submit Final Grade:</label>
+                    <select id="my_final_grade_${response_holder[i]["Application ID"]}" oninput="if(this.value){document.getElementById('sub_grade_${response_holder[i]["Application ID"]}').removeAttribute('disabled')} else{ document.getElementById('sub_grade_${response_holder[i]["Application ID"]}').setAttribute('disabled', 'disabled')};" name="my_final_grade_${response_holder[i]["Application ID"]}" class="form-control mr-sm-2" type="text" title="my final grade">
+                        <option value="" selected="selected">Please Select A Grade</option>
+                        <option value="Presentation">Presentation</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                    </select>
+                    <button type="submit" disabled="disabled" onclick="update_app_data(this, ${response_holder[i]["Application ID"]}, document.getElementById('my_final_grade_${response_holder[i]["Application ID"]}'), ${your_data[0]["Employee ID"]});" id="sub_grade_${response_holder[i]["Application ID"]}" class="btn btn-outline-success">Submit Your Final Grade
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                            <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"/>
+                        </svg>
+                    </button>`;
+                }
                 document.getElementById(my_app_loader).innerHTML += `
                 <li id="my_app_${response_holder[i]["Application ID"]}">
                     <div class="card">
@@ -605,6 +637,7 @@ function get_all_my_apps_i_filed(your_data, my_app_loader) {
                                     <p class="card-text">${total_money_cost}</p>
                                     <h5 class="card-title">Reimbursable Amount:</h5>
                                     <p class="card-text">${total_money_re}</p>
+                                    ${final_grade_submitter}
                                 </div>
                             </div>
                         </div>
@@ -624,7 +657,75 @@ function get_all_my_apps_i_filed(your_data, my_app_loader) {
     ajax.open("GET", url, true);
     ajax.send();
 }
-function get_my_app(app_id) {
+function update_app_data(remove_btn, app_id, update_to_grade, my_id) {
+    update_to_grade.setAttribute("disabled", "disabled");
+    remove_btn.setAttribute("hidden", "hidden");
+    update_data = new Object();
+    update_data.final_grade = update_to_grade.value;
+    
+    let ajax = new XMLHttpRequest();
+    ajax.onreadystatechange = function () {
+        //play the loading animation until it is done loading
+        document.getElementById("main_loader").innerHTML = "";
+        let pre_load_ani = document.createElement("div");
+        pre_load_ani.setAttribute("class", "loader");
+        if(document.getElementById("main_loader")) {
+            document.getElementById("main_loader").appendChild(pre_load_ani);
+        }
+
+        if (this.readyState == 4 && this.status == 200) {
+            document.getElementById("main_loader").innerHTML = "";
+            let response_holder = JSON.parse(this.responseText);
+            console.log("Updating your application with final grade:");
+            console.log(response_holder);
+        } else if (this.readyState == 4 && this.status == 400) {
+            document.getElementById("main_loader").innerHTML = `<p>${this.responseText}</p>`
+        }
+
+    }
+
+    url = "http://localhost:5000/users/"+my_id+"/apps/"+app_id;
+    ajax.open("PATCH", url, true);
+    ajax.setRequestHeader('Content-Type', "application/json;charset=UTF-8");
+    console.log(update_data);
+    ajax.send(JSON.stringify(update_data));
+}
+function final_app_approve(remove_btn, app_id, my_id, did_approve) {
+    remove_btn.setAttribute("hidden", "hidden");
+    update_data = new Object();
+    update_data.Passed = did_approve;
+    
+    let element = document.getElementById("approve_item_"+app_id);
+    element.parentNode.removeChild(element);
+    
+    let ajax = new XMLHttpRequest();
+    ajax.onreadystatechange = function () {
+        //play the loading animation until it is done loading
+        document.getElementById("main_loader").innerHTML = "";
+        let pre_load_ani = document.createElement("div");
+        pre_load_ani.setAttribute("class", "loader");
+        if(document.getElementById("main_loader")) {
+            document.getElementById("main_loader").appendChild(pre_load_ani);
+        }
+
+        if (this.readyState == 4 && this.status == 200) {
+            document.getElementById("main_loader").innerHTML = "";
+            let response_holder = JSON.parse(this.responseText);
+            console.log("Updating your application with final grade:");
+            console.log(response_holder);
+        } else if (this.readyState == 4 && this.status == 400) {
+            document.getElementById("main_loader").innerHTML = `<p>${this.responseText}</p>`
+        }
+
+    }
+
+    url = "http://localhost:5000/users/"+my_id+"/apps/"+app_id;
+    ajax.open("PATCH", url, true);
+    ajax.setRequestHeader('Content-Type', "application/json;charset=UTF-8");
+    console.log(update_data);
+    ajax.send(JSON.stringify(update_data));
+}
+function get_my_app(app_id, my_date) {
     if (app_id) {
         let xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
@@ -640,8 +741,34 @@ function get_my_app(app_id) {
                 console.log("get_my_app function:");
                 console.log(app_elements);
                 for (let i = 0; i < app_elements.length; i++) {
+                    
+                    // console.log(my_date);
+                    // if (app_elements[i]["Passed"] != null || my_date != "Has not yet been approved!") {
+                    //     let element = document.getElementById("approve_item_"+app_id);
+                    //     element.parentNode.removeChild(element);
+                    //     continue;
+                    // }
                     if (app_elements[i]["Employee ID"]) {
                         //Get application data
+                        
+                        let final_grade_approval = "";
+                        if (app_elements[i]["Final Grade"] != null) {
+                            document.getElementById("button_holder_"+app_id).setAttribute("hidden", "hidden");
+                            final_grade_approval = `<br />final grad submitted(${app_elements[i]["Final Grade"]})
+                            <button type="submit" id="final_approve_${app_elements[i]["Application ID"]}" onclick="final_app_approve(this, ${app_id}, ${app_elements[i]["Employee ID"]}, true)" class="btn btn-outline-success">Approve Grade
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                    <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"/>
+                                </svg>
+                            </button>
+                            <button type="submit" id="final_deny_${app_elements[i]["Application ID"]}" onclick="final_app_approve(this, ${app_id}, ${app_elements[i]["Employee ID"]}, false)" class="btn btn-outline-danger">Denied
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                    <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"/>
+                                </svg>
+                            </button>
+                            `;
+                        }
                         
                         let format_my_date = new Date(app_elements[i]["Event Date"]);
                         let nameOfDay = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
@@ -656,7 +783,7 @@ function get_my_app(app_id) {
                         document.getElementById(`app_edate_${app_id}`).innerHTML = `${nameOfDay[format_my_date.getUTCDay()]} ${format_my_date.getUTCMonth()+1}/${format_my_date.getUTCDate()}/${format_my_date.getUTCFullYear()}`;
                         document.getElementById(`app_etype_${app_id}`).innerHTML = `${app_elements[i]["Event Type"]}`;
                         document.getElementById(`app_loc_${app_id}`).innerHTML = `${app_elements[i]["Address"]} ${app_elements[i]["Second Address"]}  ${app_elements[i]["City"]}, ${app_elements[i]["State"]} ${app_elements[i]["Zip Code"]}`;
-                        document.getElementById(`app_gformat_${app_id}`).innerHTML = `${app_elements[i]["Grading Format"]}`;
+                        document.getElementById(`app_gformat_${app_id}`).innerHTML = `${app_elements[i]["Grading Format"]} ${final_grade_approval}`;
                         document.getElementById(`app_just_${app_id}`).innerHTML = `${app_elements[i]["Justification"]}`;
                     }
                 }

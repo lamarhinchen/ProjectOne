@@ -305,8 +305,6 @@ class TuitionDao:
             raise InvalidValue("Incorrect value for employee id!", loc=f" | Level:{__name__}")
         else:
             add_req = {"to_emp_id": to_emp_id}
-            print("Find values")
-            print(add_req.values())
             data_names = ""
             for app_parts in add_req:
                 if data_names != "":
@@ -324,7 +322,6 @@ class TuitionDao:
     # Get the supervisor of the employee by their ID
     @classmethod
     def get_sup_by_emps(cls, employee=None):
-        print(employee)
         if employee is None:
             raise InvalidValue("No employee information provided!", loc=f" | Level:{__name__}")
         else:
@@ -470,13 +467,10 @@ class TuitionDao:
         app_holder = app_holder[0]
         approval_matrix = {"emp_id": emp_id, "app_id": app_id}
         # Sets the urgency level based on the date
-        print(datetime.datetime.now() + datetime.timedelta(days=11) > app_holder.date_event)
         if datetime.datetime.now() + datetime.timedelta(days=11) > app_holder.date_event:
             approval_matrix["urgency_level"] = 75
-            print(approval_matrix["urgency_level"])
         elif datetime.datetime.now() + datetime.timedelta(weeks=2) > app_holder.date_event:
             approval_matrix["urgency_level"] = 50
-            print(approval_matrix["urgency_level"])
         data_names = ""
         data_values = ""
         for app_parts in approval_matrix:
@@ -496,24 +490,50 @@ class TuitionDao:
             tuple_holder)
         return db_view
 
+    # Update your application
+    @classmethod
+    def update_app_data(cls, emp_id=None, app_id=None, app_data=None):
+        # sort through the new updated data and patch into the application
+        data_names = ""
+        for app_parts in app_data:
+            if data_names != "":
+                data_names += f"AND {app_parts}=%s"
+            else:
+                data_names += f"{app_parts}=%s"
+        # Set up input values
+        app_data["app_id"] = app_id
+        app_data["emp_id"] = emp_id
+        tuple_holder = [tuition_info for tuition_info in app_data.values()]
+        db_view = Apps.make_connect(
+            F"""UPDATE application SET {data_names} WHERE app_id=%s AND emp_id=%s RETURNING *;""",
+            tuple_holder)
+        if len(db_view) <= 0:
+            raise AccessDenied(f"You do not have access to an application of id {app_id}!", loc=f" | Level:{__name__}")
+        return db_view
+
     # Update application with approval ID
     @classmethod
     def update_app_approval(cls, app_id=None, sup_approval_id=None, approval_type=None):
-        # Set up input values
-        tuple_holder = (sup_approval_id, app_id)
         # Return the approval needed to file
         # Load result set from data base
         if approval_type == "sup_approval":
+            # Set up input values
+            tuple_holder = (sup_approval_id, app_id)
             db_view = Apps.make_connect(F"""UPDATE application SET sup_approval=%s WHERE app_id=%s RETURNING *;""",
                                         tuple_holder)
             return db_view
         elif approval_type == "dept_approval":
+            # Set up input values
+            tuple_holder = (sup_approval_id, app_id)
             db_view = Apps.make_connect(F"""UPDATE application SET dept_approval=%s WHERE app_id=%s RETURNING *;""",
                                         tuple_holder)
             return db_view
         elif approval_type == "benco_approval":
-            db_view = Apps.make_connect(F"""UPDATE application SET benco_approval=%s WHERE app_id=%s RETURNING *;""",
-                                        tuple_holder)
+            # Set up input values
+            tuple_holder = (sup_approval_id, True, app_id)
+            db_view = Apps.make_connect(
+                F"""UPDATE application SET benco_approval=%s, approval_completed=%s WHERE app_id=%s RETURNING *;""",
+                tuple_holder)
             return db_view
 
     # Get total amount reimbursed
@@ -572,7 +592,6 @@ class TuitionDao:
                 counter += 1
             reimburse_val["total_apps_denied"] = counter
             tuple_holder = [temp_val for temp_val in approval_matrix.values()]
-            print(tuple_holder)
             db_view = Apps.misc_connect(
                 f"""select emp_id, count(app_id) as total_apps, sum(refunded_amt) as total_refund from application where emp_id = %s and {data_names} and extract(year from date_event) = extract(year from NOW()) group by emp_id;""",
                 tuple_holder)

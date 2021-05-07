@@ -1,9 +1,7 @@
 from psycopg2 import Error
 from cust_exceptions.app_not_completed import AppNotCompleted
-from cust_exceptions.access_denied import AccessDenied
 from cust_exceptions.acct_already_exists import AcctAlreadyExists
 from cust_exceptions.acct_does_not_exist import AcctDoesNotExist
-from cust_exceptions.incorrect_money_value import IncorrectMoneyValue
 from cust_exceptions.invalid_value import InvalidValue
 from cust_exceptions.no_funds_available import NoFundsAvailable
 from cust_exceptions.no_work_exists import NoWorkExists
@@ -333,6 +331,31 @@ def route(app):
             application_info = jsonify(
                 services.update_add_info(emp_id=int(emp_id), info_id=int(info_id), up_req=request.json))
             Log_Me.info_log(f"employeeID: {emp_id} | Level:{__name__}")
+            return application_info, 200
+        except Error as e:
+            Log_Me.error_log(f"Error! {e}, code 400 | Level:{__name__}")
+            return e, 400
+        except ValueError:
+            Log_Me.error_log(f"Error! Not a valid number, code 400")
+            return "Not a valid number", 400
+        except AcctDoesNotExist as e:
+            Log_Me.error_log(f"Error! {e}, code 400{e.loc}")
+            return e.message, 400
+        except AcctAlreadyExists as e:
+            Log_Me.error_log(f"Error! {e}, code 400{e.loc}")
+            return e.message, 400
+        except NoWorkExists as e:
+            Log_Me.error_log(f"Error! {e}, code 400{e.loc}")
+            return e.message, 400
+
+    # Update an Application
+    @app.route("/users/<emp_id>/apps/<app_id>", methods=["PATCH"])
+    def update_app_data(emp_id, app_id):
+        try:
+            # Serializing Json data to update application
+            application_info = jsonify(
+                services.update_app_data(emp_id=int(emp_id), app_id=int(app_id), app_data=request.json))
+            Log_Me.info_log(f"Successfully updated appID#: {app_id} | Level:{__name__}")
             return application_info, 200
         except Error as e:
             Log_Me.error_log(f"Error! {e}, code 400 | Level:{__name__}")

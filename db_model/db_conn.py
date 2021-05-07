@@ -53,7 +53,8 @@ class DbConn:
                                               sup_approval_attach=row[13],
                                               sup_approval=row[14], dept_approval=row[15], benco_approval=row[16],
                                               date_received=row[17], date_event=row[18], missed_time=row[19],
-                                              min_grade=row[20])
+                                              min_grade=row[20], approval_completed=row[21], passed=row[22],
+                                              final_grade=row[23])
                     counter += 1
                 Log_Me.info_log("You are connected to Postgre here are your results - ")
                 Log_Me.info_log(record)

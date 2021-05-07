@@ -1,9 +1,7 @@
 import re
 from cust_exceptions.app_not_completed import AppNotCompleted
-from cust_exceptions.incorrect_money_value import IncorrectMoneyValue
 from cust_exceptions.invalid_value import InvalidValue
 from dao.dao_imp import TuitionDao as TD
-from cust_logging.my_logger import MyLog
 
 
 class TuitionService:
@@ -114,6 +112,15 @@ class TuitionService:
         TD.get_emps(employee=emp_id)
         # Get all tasks assigned to employee
         add_info = TD.find_all_add_info(to_emp_id=emp_id)
+        return [tuition_info.json() for tuition_info in add_info.values()]
+
+    # Update your application with the new final grade
+    @classmethod
+    def update_app_data(cls, emp_id=None, app_id=None, app_data=None):
+        # Validate that the requesting employee exists
+        TD.get_emps(employee=emp_id)
+        # Update your final grade
+        add_info = TD.update_app_data(emp_id=emp_id, app_id=app_id, app_data=app_data)
         return [tuition_info.json() for tuition_info in add_info.values()]
 
     # Find emp id by app role
@@ -271,9 +278,11 @@ class TuitionService:
                 raise AppNotCompleted(f"Please provide the date of the event!", loc=f" | Level:{__name__}")
             # Checks if you have missed hours filled in
             if "missed_time" not in dict(sub_app):
-                raise AppNotCompleted(f"Please provide the total hours that will be missed!", loc=f" | Level:{__name__}")
+                raise AppNotCompleted(f"Please provide the total hours that will be missed!",
+                                      loc=f" | Level:{__name__}")
             elif float(sub_app["missed_time"]) is None:
-                raise AppNotCompleted(f"Please provide the total hours that will be missed!", loc=f" | Level:{__name__}")
+                raise AppNotCompleted(f"Please provide the total hours that will be missed!",
+                                      loc=f" | Level:{__name__}")
         return "Application Complete!"
 
     @classmethod
